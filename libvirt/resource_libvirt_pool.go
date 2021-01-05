@@ -7,7 +7,7 @@ import (
 
 	"github.com/hashicorp/terraform-plugin-sdk/helper/schema"
 	libvirt "github.com/libvirt/libvirt-go"
-	"github.com/libvirt/libvirt-go-xml"
+	libvirtxml "github.com/libvirt/libvirt-go-xml"
 )
 
 func resourceLibvirtPool() *schema.Resource {
@@ -220,6 +220,14 @@ func resourceLibvirtPoolRead(d *schema.ResourceData, meta interface{}) error {
 		d.Set("path", poolPath)
 	}
 
+	poolType := poolDef.Type
+	if poolType == "" {
+		log.Printf("Pool %s has no type specified", poolName)
+	} else {
+		log.Printf("[DEBUG] Pool %s type: %s", poolName, poolType)
+		d.Set("type", poolType)
+	}
+
 	return nil
 }
 
@@ -233,7 +241,7 @@ func resourceLibvirtPoolDelete(d *schema.ResourceData, meta interface{}) error {
 }
 
 func resourceLibvirtPoolExists(d *schema.ResourceData, meta interface{}) (bool, error) {
-	log.Printf("[DEBUG] Check if resource libvirt_pool exists")
+	log.Printf("[DEBUG] Check if resource (id : %s) libvirt_pool exists", d.Id())
 	client := meta.(*Client)
 	virConn := client.libvirt
 	if virConn == nil {
