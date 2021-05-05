@@ -178,8 +178,9 @@ func resourceLibvirtDomain() *schema.Resource {
 				},
 			},
 			"network_interface": {
-				Type:     schema.TypeList,
-				Optional: true,
+				Type:       schema.TypeList,
+				Optional:   true,
+				ConfigMode: schema.SchemaConfigModeAttr,
 				Elem: &schema.Resource{
 					Schema: map[string]*schema.Schema{
 						"network_id": {
